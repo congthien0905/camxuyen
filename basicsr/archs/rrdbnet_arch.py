@@ -24,7 +24,7 @@ class ResidualDenseBlock(nn.Module):
         self.conv4 = nn.Conv2d(num_feat + 3 * num_grow_ch, num_grow_ch, 3, 1, 1)
         self.conv5 = nn.Conv2d(num_feat + 4 * num_grow_ch, num_feat, 3, 1, 1)
 
-        self.lrelu = nn.ReLU(negative_slope=0.2, inplace=True)
+        self.lrelu = nn.LeakyReLU(negative_slope=0.2, inplace=True)
 
         # initialization
         default_init_weights([self.conv1, self.conv2, self.conv3, self.conv4, self.conv5], 0.1)
@@ -60,7 +60,7 @@ class RRDB(nn.Module):
         out = self.rdb2(out)
         out = self.rdb3(out)
         # Empirically, we use 0.2 to scale the residual for better performance
-        return out * 0.2 + x
+        return out * 0.05 + x
 
 
 @ARCH_REGISTRY.register()
