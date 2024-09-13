@@ -24,7 +24,7 @@ class ResidualDenseBlock(nn.Module):
         self.conv4 = nn.Conv2d(num_feat + 3 * num_grow_ch, num_grow_ch, 3, 1, 1)
         self.conv5 = nn.Conv2d(num_feat + 4 * num_grow_ch, num_feat, 3, 1, 1)
 
-        self.lrelu = nn.LeakyReLU(negative_slope=0.2, inplace=True)
+        self.lrelu = nn.ReLU(negative_slope=0.2, inplace=True)
 
         # initialization
         default_init_weights([self.conv1, self.conv2, self.conv3, self.conv4, self.conv5], 0.1)
@@ -36,7 +36,7 @@ class ResidualDenseBlock(nn.Module):
         x4 = self.lrelu(self.conv4(torch.cat((x, x1, x2, x3), 1)))
         x5 = self.conv5(torch.cat((x, x1, x2, x3, x4), 1))
         # Empirically, we use 0.2 to scale the residual for better performance
-        return x5 * 0.2 + x
+        return x5 * 0.05 + x
 
 
 class RRDB(nn.Module):
@@ -84,7 +84,7 @@ class RRDBNet(nn.Module):
         num_grow_ch (int): Channels for each growth. Default: 32.
     """
 
-    def __init__(self, num_in_ch, num_out_ch, scale=4, num_feat=64, num_block=5, num_grow_ch=32):
+    def __init__(self, num_in_ch, num_out_ch, scale=4, num_feat=64, num_block=23, num_grow_ch=32):
         super(RRDBNet, self).__init__()
         self.scale = scale
         if scale == 2:
